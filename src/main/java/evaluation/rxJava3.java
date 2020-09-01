@@ -29,13 +29,14 @@ public class rxJava3 {
 	
 		
 		
-Flowable<Integer> flow = Flowable.fromStream(IntStream.range(1, 10).boxed());
+Flowable<Integer> flow = Flowable.fromStream(IntStream.range(1, 100000).boxed());
 
-
+ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(5);
 
 flow
+.buffer(15)
 .flatMap(data -> Flowable.just(data)
-        .subscribeOn(Schedulers.io()))
+        .subscribeOn(Schedulers.from(newFixedThreadPool)))
           .subscribe(val -> System.out.println("Subscriber received "
                   + val + " on "
                   + Thread.currentThread()));
